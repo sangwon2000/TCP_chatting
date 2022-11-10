@@ -81,6 +81,7 @@ public class Member extends Thread {
         if(file.exists()) {
             Sender sender = new Sender(fileSocket,file);
             sender.start();
+            sender.join();
             String[] split = path.split("/");
             sendMessage("#PUT " + split[3]);
         }

@@ -49,9 +49,10 @@ public class Agent extends Thread {
     public void sendFile(String fileName) throws Exception {
         File file = new File("client/file/" + fileName);
         if(file.exists()) {
-            sendMessage("#PUT " + fileName);
             Sender sender = new Sender(fileSocket,file);
             sender.start();
+            sender.join();
+            sendMessage("#PUT " + fileName);
         }
         else System.out.println("You don't have a file with that name.");
     }
