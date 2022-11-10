@@ -47,7 +47,7 @@ public class Room {
 
     // return information of this room
     public String printMember() {
-        String result = "user: ";
+        String result = "";
         for(int i=0; i<memberList.size(); i++) {
             result += "\"" + memberList.get(i).getNickName() + "\" ";
         }
