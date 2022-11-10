@@ -12,7 +12,6 @@ public class Client {
         try {
             // IP, port setting
             InetAddress serverAddress = InetAddress.getByName(args[0]);
-            InetAddress clientAddress = InetAddress.getByName("localhost");
             int serverPort1 = 1004;
             int serverPort2 = 1005;
             int clientPort1 = Integer.parseInt(args[1]);
@@ -23,8 +22,8 @@ public class Client {
             if(!folder.exists()) folder.mkdirs();
 
             // chatSocket used for chatting, file Socket used for file transmission
-            Socket chatSocket = new Socket(serverAddress,serverPort1,clientAddress,clientPort1);
-            Socket fileSocket = new Socket(serverAddress, serverPort2, clientAddress, clientPort2);
+            Socket chatSocket = new Socket(serverAddress,serverPort1,null,clientPort1);
+            Socket fileSocket = new Socket(serverAddress, serverPort2, null, clientPort2);
 
             // Agent Thread help TCP send and receive
             agent = new Agent(chatSocket, fileSocket);
