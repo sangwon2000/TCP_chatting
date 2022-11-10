@@ -90,7 +90,7 @@ public class Server {
     public static void statusRoom(Member member) throws Exception {
         for(int i=0; i<roomList.size(); i++) {
             if(roomList.get(i).hasMember(member)) {
-                member.sendMessage("chatName: " + roomList.get(i).getChatName() + " user: " + roomList.get(i).printMember());
+                member.sendMessage("chatName: \"" + roomList.get(i).getChatName() + "\" user: " + roomList.get(i).printMember());
                 return;
             }
         }
