@@ -50,9 +50,27 @@ public class Server {
         }
 
     }
-//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+    // Work message from client
+    public static void workMessage(Member member, String message) throws Exception {
+        String[] split = message.split(" ");
 
-    // methods using deal with client's message
+        if(split[0].equalsIgnoreCase("#CREATE"))
+            createRoom(member,split[1],split[2]);
+        else if(split[0].equalsIgnoreCase("#JOIN"))
+            joinRoom(member,split[1],split[2]);
+        else if(split[0].equalsIgnoreCase("#EXIT"))
+            exitRoom(member);
+        else if(split[0].equalsIgnoreCase("#STATUS"))
+            statusRoom(member);
+        else if(split[0].equalsIgnoreCase("#PUT"))
+            putFile(member,split[1]);
+        else if(split[0].equalsIgnoreCase("#GET"))
+            getFile(member,split[1]);
+        else chatRoom(member,message);
+    }
+
+    
     public static void createRoom(Member member, String chatName, String nickName) throws Exception {
         for(int i=1; i<roomList.size(); i++) {
             if(roomList.get(i).getChatName().equals(chatName)) {

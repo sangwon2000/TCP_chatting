@@ -1,8 +1,5 @@
 package server;
 
-import transfer.Receiver;
-import transfer.Sender;
-
 import java.io.*;
 import java.net.Socket;
 
@@ -21,27 +18,11 @@ public class Member extends Thread {
     public void run() {
         try {
             while(true) {
-
                 // receive message from client's chatSocket
                 BufferedReader br = new BufferedReader(new InputStreamReader(chatSocket.getInputStream()));
                 String input = br.readLine();
-                String[] split = input.split(" ");
 
-                // deal with this message calling server's method
-                if(split[0].equalsIgnoreCase("#CREATE"))
-                    Server.createRoom(this,split[1],split[2]);
-                else if(split[0].equalsIgnoreCase("#JOIN"))
-                    Server.joinRoom(this,split[1],split[2]);
-                else if(split[0].equalsIgnoreCase("#EXIT"))
-                    Server.exitRoom(this);
-                else if(split[0].equalsIgnoreCase("#STATUS"))
-                    Server.statusRoom(this);
-                else if(split[0].equalsIgnoreCase("#PUT"))
-                    Server.putFile(this,split[1]);
-                else if(split[0].equalsIgnoreCase("#GET"))
-                    Server.getFile(this,split[1]);
-                else Server.chatRoom(this,input);
-
+                Server.workMessage(this, input);
             }
         }
         catch (Exception e) {
@@ -49,8 +30,8 @@ public class Member extends Thread {
             return;
         }
     }
-//------------------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------------------
     // getter and setter for nickName
     public String getNickName() {
         return nickName;
@@ -58,7 +39,8 @@ public class Member extends Thread {
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
-
+//------------------------------------------------------------------------------------------
+    
     // send message to client's chatSocket
     public void sendMessage(String message) throws Exception {
         DataOutputStream dos = new DataOutputStream(chatSocket.getOutputStream());
@@ -71,19 +53,39 @@ public class Member extends Thread {
         if(file.exists()) file.delete();
         file.createNewFile();
 
-        Receiver receiver = new Receiver(fileSocket,file);
-        receiver.start();
+        BufferedInputStream bis = new BufferedInputStream(fileSocket.getInputStream());
+        FileOutputStream fos = new FileOutputStream(file);
+
+        System.out.println("----- receive start -----");
+        while(bis.available() > 0) {
+            Thread.sleep(100);
+            byte[] buffer = new byte[65536];
+            int length = bis.read(buffer);
+            fos.write(buffer,0,length);
+            System.out.print("#");
+        }
+        System.out.println("\n----- receive complete -----");
     }
 
     // send file to client's fileSocket
     public void sendFile(String path) throws Exception {
         File file = new File(path);
         if(file.exists()) {
-            Sender sender = new Sender(fileSocket,file);
-            sender.start();
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            OutputStream os = fileSocket.getOutputStream();
 
             String[] split = path.split("/");
             sendMessage("#PUT " + split[3]);
+
+            System.out.println("----- send start -----");
+            while(bis.available() > 0) {
+                byte[] buffer = new byte[65536];
+                int length = bis.read(buffer);
+                os.write(buffer,0,length);
+                System.out.print("#");
+            }
+            System.out.println("\n----- send complete -----");
+
         }
         else sendMessage("File not uploaded to this chat room.");
     }

@@ -1,8 +1,5 @@
 package client;
 
-import transfer.Receiver;
-import transfer.Sender;
-
 import java.io.*;
 import java.net.Socket;
 
@@ -37,6 +34,7 @@ public class Agent extends Thread {
             e.printStackTrace();
         }
     }
+    
 //-----------------------------------------------------------------------------------
 
     // send message to server's chatSocket
@@ -45,24 +43,46 @@ public class Agent extends Thread {
         dos.writeBytes(message + "\n");
     }
 
-    //send file to server's fileSocket
-    public void sendFile(String fileName) throws Exception {
-        File file = new File("client/file/" + fileName);
-        if(file.exists()) {
-            Sender sender = new Sender(fileSocket,file);
-            sender.start();
-            sendMessage("#PUT " + fileName);
-        }
-        else System.out.println("You don't have a file with that name.");
-    }
-
     // receive file from server's fileSocket
     public void receiveFile(String fileName) throws Exception {
         File file = new File("client/file/" + fileName);
         if(file.exists()) file.delete();
         file.createNewFile();
 
-        Receiver receiver = new Receiver(fileSocket,file);
-        receiver.start();
+        BufferedInputStream bis = new BufferedInputStream(fileSocket.getInputStream());
+        FileOutputStream fos = new FileOutputStream(file);
+
+        System.out.println("----- receive start -----");
+        while(bis.available() > 0) {
+            Thread.sleep(100);
+            byte[] buffer = new byte[65536];
+            int length = bis.read(buffer);
+            fos.write(buffer,0,length);
+            System.out.print("#");
+        }
+        System.out.println("\n----- receive complete -----");
     }
+
+    //send file to server's fileSocket
+    public void sendFile(String fileName) throws Exception {
+        File file = new File("client/file/" + fileName);
+        if(file.exists()) {
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            OutputStream os = fileSocket.getOutputStream();
+
+            sendMessage("#PUT " + fileName);
+
+            System.out.println("----- send start -----");
+            while(bis.available() > 0) {
+                byte[] buffer = new byte[65536];
+                int length = bis.read(buffer);
+                os.write(buffer,0,length);
+                System.out.print("#");
+            }
+            System.out.println("\n----- send complete -----");
+        }
+        else System.out.println("You don't have a file with that name.");
+    }
+
+    
 }

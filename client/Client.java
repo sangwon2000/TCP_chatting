@@ -12,9 +12,9 @@ public class Client {
         try {
             // IP, port setting
             InetAddress serverAddress = InetAddress.getByName(args[0]);
-            InetAddress clientAddress = InetAddress.getByName("localhost");
             int serverPort1 = 1004;
             int serverPort2 = 1005;
+            
             int clientPort1 = Integer.parseInt(args[1]);
             int clientPort2 = Integer.parseInt(args[2]);
 
@@ -39,7 +39,8 @@ public class Client {
                 String[] split = input.split(" ");
 
                 // PUT command
-                if(split[0].equalsIgnoreCase("#PUT")) agent.sendFile(split[1]);
+                if(split[0].equalsIgnoreCase("#PUT"))
+                    agent.sendFile(split[1]);
                 // other command or message
                 else agent.sendMessage(input);
             }
