@@ -22,6 +22,7 @@ public class Member extends Thread {
                 BufferedReader br = new BufferedReader(new InputStreamReader(chatSocket.getInputStream()));
                 String input = br.readLine();
 
+                // work the message
                 Server.workMessage(this, input);
             }
         }

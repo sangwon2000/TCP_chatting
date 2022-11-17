@@ -13,7 +13,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            // port setting
+            // Server's port setting
             int port1 = Integer.parseInt(args[0]);
             int port2 = Integer.parseInt(args[1]);
 
@@ -25,13 +25,13 @@ public class Server {
             chatServerSocket = new ServerSocket(port1);
             fileServerSocket = new ServerSocket(port2);
 
-            // create waiting room
+            // initialize roomList create waiting room
             roomList = new ArrayList<Room>();
             roomList.add(new Room("Waiting Room"));
 
             System.out.println("The server was successfully opened");
 
-            // accept client and add to waiting room
+            // accept a client and add the client to waiting room
             while(true) {
                 Socket chatSocket = chatServerSocket.accept();
                 Socket fileSocket = fileServerSocket.accept();

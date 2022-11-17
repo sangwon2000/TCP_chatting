@@ -22,10 +22,10 @@ public class Agent extends Thread {
                 String input = br.readLine();
                 String[] split = input.split(" ");
 
-                // if server send PUT command, client prepare to receive file
+                // if server sent PUT command, client prepare to receive file
                 if(split[0].equalsIgnoreCase("#PUT"))
                     receiveFile(split[1]);
-                // otherwise, print server's message
+                // otherwise, print the message that server sent
                 else System.out.println(input);
             }
 
@@ -82,7 +82,5 @@ public class Agent extends Thread {
             System.out.println("\n----- send complete -----");
         }
         else System.out.println("You don't have a file with that name.");
-    }
-
-    
+    }    
 }

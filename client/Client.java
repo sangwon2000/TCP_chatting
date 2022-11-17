@@ -10,11 +10,12 @@ public class Client {
 
     public static void main(String[] args) {
         try {
-            // IP, port setting
+            // Server's IP, port setting
             InetAddress serverAddress = InetAddress.getByName(args[0]);
             int serverPort1 = 1004;
             int serverPort2 = 1005;
             
+            // Client's port setting
             int clientPort1 = Integer.parseInt(args[1]);
             int clientPort2 = Integer.parseInt(args[2]);
 
@@ -26,7 +27,7 @@ public class Client {
             Socket chatSocket = new Socket(serverAddress, serverPort1,null,clientPort1);
             Socket fileSocket = new Socket(serverAddress, serverPort2, null, clientPort2);
 
-            // Agent Thread help TCP send and receive
+            // Agent Thread helps TCP send and receive
             agent = new Agent(chatSocket, fileSocket);
             agent.start();
 
@@ -49,5 +50,4 @@ public class Client {
             e.printStackTrace();
         }
     }
-
 }
